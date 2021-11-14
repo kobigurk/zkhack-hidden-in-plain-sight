@@ -1,20 +1,14 @@
 #![allow(unused, unreachable_code, dead_code)]
 
-use prompt::{puzzle, welcome};
-use ark_bls12_381::{G1Affine, Fr};
+use ark_bls12_381::{Fr, G1Affine};
 use ark_ff::*;
-use ark_serialize::CanonicalDeserialize;
-use hidden_in_plain_sight::{
-  PUZZLE_DESCRIPTION,
-  generate::kzg_commit,
-};
 use ark_poly::{
-    Polynomial,
-    univariate::DensePolynomial,
+    univariate::DensePolynomial, EvaluationDomain, GeneralEvaluationDomain, Polynomial,
     UVPolynomial,
-    EvaluationDomain,
-    GeneralEvaluationDomain
 };
+use ark_serialize::CanonicalDeserialize;
+use hidden_in_plain_sight::{generate::kzg_commit, PUZZLE_DESCRIPTION};
+use prompt::{puzzle, welcome};
 
 fn read_cha_from_file() -> (Vec<G1Affine>, Vec<Vec<Fr>>, Fr, Fr, G1Affine, Fr, Fr) {
     use std::fs::File;
@@ -33,7 +27,7 @@ fn read_cha_from_file() -> (Vec<G1Affine>, Vec<Vec<Fr>>, Fr, Fr, G1Affine, Fr, F
     let opn_2_bytes: Vec<u8> = bytes[1130512..1130544].to_vec();
 
     let setup = Vec::<G1Affine>::deserialize_unchecked(&setup_bytes[..]).unwrap();
-    let accts = Vec::<Vec::<Fr>>::deserialize_unchecked(&accts_bytes[..]).unwrap();
+    let accts = Vec::<Vec<Fr>>::deserialize_unchecked(&accts_bytes[..]).unwrap();
     let cha_1 = Fr::deserialize_unchecked(&cha_1_bytes[..]).unwrap();
     let cha_2 = Fr::deserialize_unchecked(&cha_2_bytes[..]).unwrap();
     let commt = G1Affine::deserialize_unchecked(&commt_bytes[..]).unwrap();
@@ -47,7 +41,7 @@ fn main() {
     welcome();
     puzzle(PUZZLE_DESCRIPTION);
 
-    let (setup, accts, cha_1, cha_2, commt, opn_1, opn_2) = read_cha_from_file(); 
+    let (setup, accts, cha_1, cha_2, commt, opn_1, opn_2) = read_cha_from_file();
 
     // Replace with the solution polynomial, derived from the account!
     let solution_blinded_acct = DensePolynomial::from_coefficients_vec(vec![]);
